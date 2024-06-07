@@ -25,7 +25,7 @@ contract test {
     }
 
     function checkRevert(int aa,int bb) public ss returns(int c) {
-        if(aa<=10 || bb>=10 || bb<=0){
+        if(aa<10 || bb>=10 || bb<=0){
             revert("First number should be greater than or equal to 10 and second should be between 0 -10 ");
         }
         else{
