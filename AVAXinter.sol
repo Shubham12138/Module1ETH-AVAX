@@ -67,7 +67,7 @@ contract schoolFarewell {
 
     //fuction to register the seat to their address after checking the number of seats left
     function teacherAreaEntryRegister()public returns(string memory){
-        assert(keccak256(abi.encodePacked(obj.proffession)) != keccak256(abi.encodePacked("teacher")));
+        assert(keccak256(abi.encodePacked(obj.proffession)) == keccak256(abi.encodePacked("teacher")));
         if(n>0 && n<=10){
             seat[msg.sender]=n;
             n -=1;
