@@ -35,7 +35,7 @@ contract schoolFarewell {
 
     //function to change the details of the user after checking that only the allowed fields are opted
     function changeDetails(string memory detail_in_LC, string memory newData, address s) public ss(s) {
-        if (keccak256(abi.encodePacked(detail_in_LC)) == keccak256(abi.encodePacked("name")) || keccak256(abi.encodePacked(detail_in_LC)) == keccak256(abi.encodePacked("proffession"))){
+        if (keccak256(abi.encodePacked(detail_in_LC)) == keccak256(abi.encodePacked("name")) || keccak256(abi.encodePacked(detail_in_LC)) == keccak256(abi.encodePacked("participation"))){
             if(keccak256(abi.encodePacked(detail_in_LC)) == keccak256(abi.encodePacked("name"))){
                 obj.name=newData;
             }
@@ -44,7 +44,7 @@ contract schoolFarewell {
             }
         }
         else{
-            revert("Only the 'Name' and 'Proffesion' are allowed to change , for other modifications contact to the faculty");
+            revert("Only the 'Name' and 'Participation Details' are allowed to change , for other modifications contact to the faculty");
         }
     }
 
