@@ -2,45 +2,77 @@
 
 pragma solidity ^0.8.3;
 
-contract test {
-    int a;
-    int b;
-
-    address ak;
-
-    constructor (){
-        ak=msg.sender;
+contract schoolFarewell {
+    
+    //going to store the details of every guest in the form a structured datatype
+    struct details{
+        string name;
+        uint id;
+        uint standard;
+        string proffession;
+        string participationDetail;
     }
 
-    modifier ss{
-        require(msg.sender==ak);
+    //a mapping which will map the address of the user the his/her details
+    mapping(address => details) check;
+
+    //to ensure that only the sender access his/her details
+    modifier ss(address ak) {
+        require(ak == msg.sender);
         _;
     }
 
-    function checkRequire(int _a,int _b) public ss returns(int c) {
-        require(_a>=10 && _b>=10 , "Both the numbers should be greater than or equal to 10");
-        a=_a;
-        b=_b;
-        return a+b;
+    // created the details datatype object or i say variable
+    details obj;
+
+    //function to put the details of the user after checking that only the allowed classes , student's are participating
+    function putDetails(string memory _name, uint _id, uint _standard, string memory _profession, string memory _participationDetail, address s) public ss(s) {
+
+        require(_standard>=9 && _standard <=12 , "This Farewell is only organised for senior students and faculty, juniors are strictly not allowed");
+        obj=details(_name,_id,_standard,_profession,_participationDetail);
+        check[s]=obj;
     }
 
-    function checkRevert(int aa,int bb) public ss returns(int c) {
-        if(aa<10 || bb>=10 || bb<=0){
-            revert("First number should be greater than or equal to 10 and second should be between 0 -10 ");
+    //function to change the details of the user after checking that only the allowed fields are opted
+    function changeDetails(string memory detail_in_LC, string memory newData, address s) public ss(s) {
+        if (keccak256(abi.encodePacked(detail_in_LC)) == keccak256(abi.encodePacked("name")) || keccak256(abi.encodePacked(detail_in_LC)) == keccak256(abi.encodePacked("proffession"))){
+            if(keccak256(abi.encodePacked(detail_in_LC)) == keccak256(abi.encodePacked("name"))){
+                obj.name=newData;
+            }
+            else {
+                obj.participationDetail=newData;
+            }
         }
         else{
-            a=aa;
-            b=bb;
-            return a-b;
+            revert("Only the 'Name' and 'Proffesion' are allowed to change , for other modifications contact to the faculty");
         }
     }
 
-    function checkAssert(int aa,int bb) public ss returns(int c) {
-        assert(aa>0 && bb>0);
-        a=aa;
-        b=bb;
-        return a*b;
+    //function to show all the entered details
+    function showDetails() public view returns(string memory Name_is, uint Id_is, uint Standard_is, string memory Profession_is, string memory Participation_Detail_is){
+        Name_is = obj.name;
+        Id_is = obj.id;
+        Standard_is =obj.standard;
+        Profession_is = obj.proffession;
+        Participation_Detail_is = obj.participationDetail;
+
+        return (obj.name, obj.id, obj.standard, obj.proffession, obj.participationDetail);
     }
 
 
+    //variable to keep the count of seats in school
+    uint n=10;
+    //mapping the faculty with their seat number
+    mapping(address => uint) seat;
+
+    //fuction to register the seat to their address after checking the number of seats left
+    function teacherAreaEntryRegister()public returns(string memory){
+        assert(keccak256(abi.encodePacked(obj.proffession)) != keccak256(abi.encodePacked("teacher")));
+        if(n>0 && n<=10){
+            seat[msg.sender]=n;
+            n -=1;
+            return "Seat Alloted";
+        }
+        return "Only 10 seats are there";
+    }
 }
